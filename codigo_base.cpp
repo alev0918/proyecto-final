@@ -14,7 +14,61 @@ using namespace std;
 // Incluir aquí el código que ejecute lo solicitado en el enunciado
 // (funciones de las Partes A y B).
 // -------------------------------------------------------------------
+// PARTE A: funciones básicas
 
+// aMayusculas: Devuelve una copia de 's' con todas sus letras en mayúscula.
+// 's' se recibe POR VALOR (sin &), así que ya es una copia: podemos 
+// modificarla aquí sin dañar la secuencia original del main.
+// Ejemplo: "atgc" -> "ATGC".  Los caracteres que no son letras
+// (por ejemplo '3' o '-') quedan iguales, porque toupper no los cambia.
+
+string aMayusculas(string s) {
+    for (int i = 0; i < s.length(); i++) {
+        s[i] = toupper(s[i]);   // convierte el carácter i a mayúscula
+    }
+    return s;
+}
+
+// esValida: Devuelve true si 's' solo contiene A, C, G o T. 
+// Recibe la secuencia YA en mayúsculas, por eso solo se comparan las letras mayúsculas.
+// Se pasa como 'const string &' para no copiarla y no modificarla.
+
+bool esValida(const string &s) {
+    for (int i = 0; i < s.length(); i++) {
+        char c = s[i];
+        // Si el carácter no es ninguno de los cuatro nucleótidos, la
+        // secuencia ya es inválida y no hace falta revisar el resto.
+        if (c != 'A' && c != 'C' && c != 'G' && c != 'T') {
+            return false;
+        }
+    }
+    // El ciclo terminó sin encontrar caracteres raros: es válida.
+    return true;
+}
+
+// distanciaHamming: Cuenta en cuántas posiciones difieren 'a' y 'b'.
+// Solo se llama cuando ambas tienen la misma longitud, así que 
+// podemos usar a.length() como límite y acceder a b[i] sin salirnos.
+// Ejemplo: "ATCGAT" vs "ATGGCT" -> difieren en las posiciones 2 y 4 -> distancia = 2.
+
+int distanciaHamming(const string &a, const string &b) {
+    int distancia = 0;               // contador de diferencias
+    for (int i = 0; i < a.length(); i++) {
+        if (a[i] != b[i]) {
+            distancia++;             // en esta posición hay una mutación
+        }
+    }
+    return distancia;
+}
+
+// porcentajeIdentidad: Devuelve (L - d) / L * 100, donde d es la distancia y L la longitud.
+// Notita: si se hace (L - d) / L con enteros, C++ usa división entera
+// (ejemplo: 4 / 6 = 0). Por eso convertimos a double
+// antes de dividir: así 4.0 / 6 = 0.666... y el resultado da 66.7 %.
+
+double porcentajeIdentidad(int d, int L) {
+    return (double)(L - d) / L * 100.0;
+}
 
 // -------------------------------------------------------------------
 // separarPareja
@@ -162,6 +216,40 @@ int main() {
         // Incluir aquí el código que ejecute lo solicitado en el
         // enunciado para cada pareja.
         // -----------------------------------------------------------
+
+        // --------------------------------------------
+        // PARTE A: validación, distancia e identidad
+        // --------------------------------------------
+        
+        // Primero se pasan ambas secuencias a mayúsculas (sección 3.2).
+        // Así "atgc" se trata igual que "ATGC" y se imprime en mayúsculas
+        seq1 = aMayusculas(seq1);
+        seq2 = aMayusculas(seq2);
+
+        cout << "Pareja " << numPareja << ": " << seq1 << " vs " << seq2 << " -> ";
+
+        // Se revisan los errores EN ORDEN y solo se reporta el primero:
+        // 1) caracteres inválidos, 2) longitudes diferentes
+        if (!esValida(seq1) || !esValida(seq2)) {
+            cout << "Error: caracteres inválidos" << endl;
+            continue;   // pasamos a la siguiente línea
+        }
+        if (seq1.length() != seq2.length()) {
+            cout << "Error: longitudes diferentes" << endl;
+            continue;
+        }
+
+        // Si llegamos aquí la pareja es válida: calculamos resultados
+        int L = seq1.length();
+        int d = distanciaHamming(seq1, seq2);
+        double identidad = porcentajeIdentidad(d, L);
+
+        cout << "Distancia: " << d << " | Identidad: " << identidad << "%" << endl;
+
+        // ---------------------------------------------------------------------
+        // PARTE B: el conteo de nucleótidos y el contenido GC de seq1 y seq2
+        // ---------------------------------------------------------------------
+
     }
 
     // Cerramos el archivo: ya no lo necesitamos. (Se cerraría solo al
