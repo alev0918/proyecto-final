@@ -14,9 +14,12 @@ using namespace std;
 // Incluir aquí el código que ejecute lo solicitado en el enunciado
 // (funciones de las Partes A y B).
 // -------------------------------------------------------------------
+
+// ********************************************************************************************
+
 // PARTE A: funciones básicas
 
-// aMayusculas: Devuelve una copia de 's' con todas sus letras en mayúscula.
+// 1) aMayusculas: Devuelve una copia de 's' con todas sus letras en mayúscula.
 // 's' se recibe POR VALOR (sin &), así que ya es una copia: podemos 
 // modificarla aquí sin dañar la secuencia original del main.
 // Ejemplo: "atgc" -> "ATGC".  Los caracteres que no son letras
@@ -29,7 +32,7 @@ string aMayusculas(string s) {
     return s;
 }
 
-// esValida: Devuelve true si 's' solo contiene A, C, G o T. 
+// 2) esValida: Devuelve true si 's' solo contiene A, C, G o T. 
 // Recibe la secuencia YA en mayúsculas, por eso solo se comparan las letras mayúsculas.
 // Se pasa como 'const string &' para no copiarla y no modificarla.
 
@@ -46,7 +49,7 @@ bool esValida(const string &s) {
     return true;
 }
 
-// distanciaHamming: Cuenta en cuántas posiciones difieren 'a' y 'b'.
+// 3) distanciaHamming: Cuenta en cuántas posiciones difieren 'a' y 'b'.
 // Solo se llama cuando ambas tienen la misma longitud, así que 
 // podemos usar a.length() como límite y acceder a b[i] sin salirnos.
 // Ejemplo: "ATCGAT" vs "ATGGCT" -> difieren en las posiciones 2 y 4 -> distancia = 2.
@@ -61,7 +64,7 @@ int distanciaHamming(const string &a, const string &b) {
     return distancia;
 }
 
-// porcentajeIdentidad: Devuelve (L - d) / L * 100, donde d es la distancia y L la longitud.
+// 4) porcentajeIdentidad: Devuelve (L - d) / L * 100, donde d es la distancia y L la longitud.
 // Notita: si se hace (L - d) / L con enteros, C++ usa división entera
 // (ejemplo: 4 / 6 = 0). Por eso convertimos a double
 // antes de dividir: así 4.0 / 6 = 0.666... y el resultado da 66.7 %.
@@ -69,6 +72,68 @@ int distanciaHamming(const string &a, const string &b) {
 double porcentajeIdentidad(int d, int L) {
     return (double)(L - d) / L * 100.0;
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// PARTE B: conteo de nucleótidos con arreglos
+
+// 1) contarNucleotidos: Cuenta cuántas veces aparece cada nucleótido en 's'.
+// Los conteos se guardan en el arreglo 'conteo' con este orden:
+// 0 = A, 1 = C, 2 = G, 3 = T.
+// Los arreglos siempre se pasan "por referencia": lo que se escriba aquí
+// en 'conteo' se ve en el arreglo original de quien llamó la función.
+// Ejemplo: "ATCGAT" -> conteo = {2, 1, 1, 2}.
+
+void contarNucleotidos(const string &s, int conteo[4]) {
+ // Primero se pone el arreglo en ceros, para no sumar sobre basura
+    // o sobre los conteos de una secuencia anterior.
+    for (int i = 0; i < 4; i++) {
+        conteo[i] = 0;
+    }
+    // Luego se recorre la secuencia y se suma 1 en la casilla que
+    // corresponde a cada letra.
+    for (int i = 0; i < s.length(); i++) {
+        if (s[i] == 'A') {
+            conteo[0]++;
+        } else if (s[i] == 'C') {
+            conteo[1]++;
+        } else if (s[i] == 'G') {
+            conteo[2]++;
+        } else if (s[i] == 'T') {
+            conteo[3]++;
+        }
+    }
+}
+
+// 2) contenidoGC: Devuelve (conteo de C + conteo de G) / L * 100.
+// conteo[1] es C y conteo[2] es G. Se recibe como 'const' porque
+// aquí solo se lee el arreglo, no se modifica.
+// Igual que en porcentajeIdentidad, se convierte a double antes de
+// dividir para que no haga división entera.
+// Ejemplo: "ATCGAT" -> (1 + 1) / 6 * 100 = 33.3 %.
+
+double contenidoGC(const int conteo[4], int L) {
+    return (double)(conteo[1] + conteo[2]) / L * 100.0;
+}
+
+// 3) mostrarConteo (auxiliar): Imprime una línea con los conteos y el GC
+// de una secuencia, con el formato de la sección 7:
+//    ATCGAT A=2 C=1 G=1 T=2 GC=33.3%
+// Se hizo como función para no repetir el mismo código para seq1 y seq2.
+
+void mostrarConteo(const string &s) {
+    int conteo[4];
+    contarNucleotidos(s, conteo);
+    double gc = contenidoGC(conteo, s.length());
+    cout << "   " << s
+         << " A=" << conteo[0]
+         << " C=" << conteo[1]
+         << " G=" << conteo[2]
+         << " T=" << conteo[3]
+         << " GC=" << gc << "%" << endl;
+}
+
+// *******************************************************************************************
 
 // -------------------------------------------------------------------
 // separarPareja
@@ -217,6 +282,8 @@ int main() {
         // enunciado para cada pareja.
         // -----------------------------------------------------------
 
+        // ********************************************************************************
+        
         // --------------------------------------------
         // PARTE A: validación, distancia e identidad
         // --------------------------------------------
@@ -245,11 +312,17 @@ int main() {
         double identidad = porcentajeIdentidad(d, L);
 
         cout << "Distancia: " << d << " | Identidad: " << identidad << "%" << endl;
-
+        
         // ---------------------------------------------------------------------
         // PARTE B: el conteo de nucleótidos y el contenido GC de seq1 y seq2
         // ---------------------------------------------------------------------
 
+         // Se muestran los conteos y el GC de cada secuencia de la pareja.
+        mostrarConteo(seq1);
+        mostrarConteo(seq2);
+
+        // *******************************************************************************
+        
     }
 
     // Cerramos el archivo: ya no lo necesitamos. (Se cerraría solo al
