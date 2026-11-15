@@ -1,0 +1,15 @@
+Pareja 1: CGTACGTACG vs CGTACGTACG -> Distancia: 0 | Identidad: 100.0%
+   CGTACGTACG A=2 C=3 G=3 T=2 GC=60.0%
+   CGTACGTACG A=2 C=3 G=3 T=2 GC=60.0%
+Pareja 2: AAAAATTTTT vs TTTTTAAAAA -> Distancia: 10 | Identidad: 0.0%
+   AAAAATTTTT A=5 C=0 G=0 T=5 GC=0.0%
+   TTTTTAAAAA A=5 C=0 G=0 T=5 GC=0.0%
+Pareja 3: ACGTACGT vs TGCATGCA -> Distancia: 8 | Identidad: 0.0%
+   ACGTACGT A=2 C=2 G=2 T=2 GC=50.0%
+   TGCATGCA A=2 C=2 G=2 T=2 GC=50.0%
+Pareja 4: ACGTZ vs ACGTA -> Error: caracteres inv├ílidos
+Pareja 5: ACG vs ACGTAC -> Error: longitudes diferentes
+Aviso: l├¡nea ignorada por formato incorrecto: AC GT TA
+Pareja 6: GCTAGCTAGC vs GCTAGCTAGC -> Distancia: 0 | Identidad: 100.0%
+   GCTAGCTAGC A=2 C=3 G=3 T=2 GC=60.0%
+   GCTAGCTAGC A=2 C=3 G=3 T=2 GC=60.0%
